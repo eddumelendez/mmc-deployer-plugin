@@ -6,9 +6,20 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.FormValidation;
 import hudson.util.Secret;
 
 import java.io.IOException;
+import java.net.URL;
+
+import javax.servlet.ServletException;
+
+import net.sf.json.JSONObject;
+
+import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.bouncycastle.util.encoders.Base64;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
 public class MuleDeployerBuilder extends Builder {
 
@@ -37,7 +48,7 @@ public class MuleDeployerBuilder extends Builder {
 				|| user.isEmpty() || password.isEmpty()) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -87,6 +98,41 @@ public class MuleDeployerBuilder extends Builder {
 		@Override
 		public String getDisplayName() {
 			return "";
+		}
+
+		@Override
+		public boolean configure(StaplerRequest req, JSONObject json)
+				throws hudson.model.Descriptor.FormException {
+
+			mmcUrl = json.getString("mmcUrl");
+			mmcUser = json.getString("mmcUser");
+			mmcPassword = Secret.fromString(json.getString("mmcPassword"));
+
+			save();
+
+			return super.configure(req, json);
+		}
+
+		public FormValidation doTestConnection(@QueryParameter final String mmcUrl,
+				@QueryParameter final String mmcUser,
+				@QueryParameter final String mmcPassword) throws IOException,
+				ServletException {
+			
+			URL url = new URL(mmcUrl);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			String credentials = mmcUser + ":" + mmcPassword;
+			String encodedCredentials = new String(Base64.encode(credentials.getBytes()));
+			connection.setRequestProperty("Authorization", "Basic " + encodedCredentials);
+			connection.connect();
+			try {
+				if (connection.getResponseCode() == 200) {
+					return FormValidation.ok("Success. Connection with MMC verified");
+				}
+				return FormValidation.error("Failed. Please check the configuration. HTTP Status: " + connection);
+			} catch (Exception e) {
+				return FormValidation.error("Client error: " + e.getMessage());
+			}
 		}
 
 	}
