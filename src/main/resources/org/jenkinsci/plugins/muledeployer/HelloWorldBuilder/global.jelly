@@ -11,10 +11,21 @@
     tags they use. Views are always organized according to its owner class,
     so it should be straightforward to find them.
   -->
-  <f:section title="Hello World Builder">
-    <f:entry title="French" field="useFrench"
-      description="Check if we should say hello in French">
-      <f:checkbox />
+  <f:section title="Mule Management Console">
+    <f:entry title="Mule Management Console URL" field="mmcUrl"
+      description="Add Mule Management Console URL">
+      <f:textbox />
     </f:entry>
+     <f:entry title="User" field="mmcUser"
+      description="Add User">
+      <f:textbox />
+    </f:entry>
+     <f:entry title="Password" field="mmcPassword"
+      description="Add Password">
+      <f:textbox />
+    </f:entry>
+    <f:validateButton
+       title="${%Test Connection}" progress="${%Testing...}"
+       method="testConnection" with="mmcUrl,mmcUser,mmcPassword" />
   </f:section>
 </j:jelly>
