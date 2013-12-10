@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.muledeployer;
 
+import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
@@ -57,6 +58,7 @@ public class MuleDeployerBuilder extends Builder {
 		return (DescriptorImpl) super.getDescriptor();
 	}
 
+	@Extension
 	public static final class DescriptorImpl extends
 			BuildStepDescriptor<Builder> {
 

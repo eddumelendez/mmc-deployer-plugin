@@ -1,2 +1,2 @@
-mmc-deployes-plugin
+mmc-deployer-plugin
 ===================
