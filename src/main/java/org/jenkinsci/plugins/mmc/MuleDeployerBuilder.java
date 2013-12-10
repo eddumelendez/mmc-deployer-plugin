@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.muledeployer;
+package org.jenkinsci.plugins.mmc;
 
 import hudson.Extension;
 import hudson.Launcher;

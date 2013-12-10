@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.muledeployer;
+package org.jenkinsci.plugins.mmc;
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.util.FormValidation;
